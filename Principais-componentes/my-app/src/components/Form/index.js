@@ -21,8 +21,10 @@ export default function Form(){
     }
 
     function verificationImc() {
-        Vibration.vibrate()
-        setErrorMessage("Campo obrigatório*")
+        if(imc == null) {
+            Vibration.vibrate()
+            setErrorMessage("Campo obrigatório*")
+        }
     }
 
     function validationImc() {
@@ -34,49 +36,61 @@ export default function Form(){
             setMessageImc("Seu imc é igual:")
             setTextButton("Calcular novamente")
             setErrorMessage(null)
-            return
         }
-        setImc(null)
-        verificationImc()
-        setTextButton("Calcular")
-        setMessageImc("Preencha o peso e altura")
+        else {
+            setImc(null)
+            verificationImc()
+            setTextButton("Calcular")
+            setMessageImc("Preencha o peso e altura")
+        }
     }
 
     return(
-        <Pressable onPress={Keyboard.dismiss} style={styles.formContext}>
-            <View style={styles.form}>
-                <Text style={styles.formLabel}>Altura</Text>
-                <Text style={styles.errorMessage}>{errorMessage}</Text>
-                <TextInput
-                style={styles.input}
-                onChangeText={setHeight}
-                value={height}
-                placeholder="Ex. 1.75"
-                keyboardType="numeric"
-                ></TextInput>
+            <View style={styles.formContext}>
+                {imc == null ?
+                <Pressable onPress={Keyboard.dismiss} style={styles.form}>
+                    <Text style={styles.formLabel}>Altura</Text>
+                    <Text style={styles.errorMessage}>{errorMessage}</Text>
+                    <TextInput
+                    style={styles.input}
+                    onChangeText={setHeight}
+                    value={height}
+                    placeholder="Ex. 1.75"
+                    keyboardType="numeric"
+                    ></TextInput>
 
-                <Text style={styles.formLabel}>Peso</Text>
-                <Text style={styles.errorMessage}>{errorMessage}</Text>
-                <TextInput
-                style={styles.input}
-                value={weight}
-                onChangeText={setWeight}
-                placeholder="Ex. 60.355"
-                keyboardType="numeric"
-                ></TextInput>
+                    <Text style={styles.formLabel}>Peso</Text>
+                    <Text style={styles.errorMessage}>{errorMessage}</Text>
+                    <TextInput
+                    style={styles.input}
+                    value={weight}
+                    onChangeText={setWeight}
+                    placeholder="Ex. 60.355"
+                    keyboardType="numeric"
+                    ></TextInput>
 
+                    <TouchableOpacity
+                    style={styles.buttonCalculator}
+                    onPress={() => {
+                        validationImc()
+                    }}
+                    >
+                        <Text style={styles.textButtonCalculator}>{textButton}</Text>
+                    </TouchableOpacity>
+            </Pressable>
+            : 
+            <View style={styles.exhibitionResultImc}>
+                <ResultImc messageResultImc={messageImc} resultImc={imc}></ResultImc>
                 <TouchableOpacity
-                style={styles.buttonCalculator}
-                onPress={() => {
-                    validationImc()
-                }}
-                >
-                    <Text style={styles.textButtonCalculator}>{textButton}</Text>
-                </TouchableOpacity>
+                    style={styles.buttonCalculator}
+                    onPress={() => {
+                        validationImc()
+                    }}
+                    >
+                        <Text style={styles.textButtonCalculator}>{textButton}</Text>
+                    </TouchableOpacity>
             </View>
-
-            <ResultImc messageResultImc={messageImc} resultImc={imc}></ResultImc>
-            
-        </Pressable>
+            }
+        </View>
     );
 }
